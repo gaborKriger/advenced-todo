@@ -1,7 +1,6 @@
 package com.codecool.kriger.todo.controller;
 
 import com.codecool.kriger.todo.model.Todo;
-import com.codecool.kriger.todo.repository.TodoRepository;
 import com.codecool.kriger.todo.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +13,7 @@ public class TodoController {
 
     private static final String SUCCESS = "{\"success\":true}";
 
-    private TodoRepository todoRepository;
     private TodoService todoService;
-
-    @Autowired
-    public void setTodoRepository(TodoRepository todoRepository) {
-        this.todoRepository = todoRepository;
-    }
 
     @Autowired
     public void setTodoService(TodoService todoService) {
@@ -29,7 +22,7 @@ public class TodoController {
 
     // Add new
     @PostMapping("/addTodo")
-    public String addNew(@RequestBody @Valid String incomingTodoTitle) {
+    public String addNew(@RequestParam("todo-title") String incomingTodoTitle) {
         todoService.addNew(incomingTodoTitle);
         return SUCCESS;
     }
@@ -49,8 +42,23 @@ public class TodoController {
 
     // Toggle all status
     @PutMapping("/todos/toggle_all")
-    public String toggleAllStatus() {
-        // TODO
+    public String toggleAllStatus(@RequestBody @Valid String complete) {
+        todoService.toggleAllStatus(complete.equals("true"));
+        return SUCCESS;
+    }
+
+    // Remove by id
+    @DeleteMapping("/todos/{todoID}")
+    public String removeById(@PathVariable("todoID") Long todoID) {
+        todoService.removeById(todoID);
+        return SUCCESS;
+    }
+
+    // Update by id
+    @PutMapping("/todos/{todoID}")
+    public String updateById(@RequestParam("todo-title") String title,
+                             @PathVariable("todoID") Long todoID) {
+        todoService.updateById(todoID, title);
         return SUCCESS;
     }
 

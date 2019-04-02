@@ -39,4 +39,36 @@ public class TodoService {
         }
     }
 
+    // Toggle all status
+    public void toggleAllStatus(boolean complete) {
+        todoRepository.findAll()
+                .forEach(todo -> todo.setStatus(
+                        complete ? Status.COMPLETE : Status.ACTIVE));
+    }
+
+    // Remove by id
+    public void removeById(Long TodoID) {
+        List<Todo> todos = todoRepository.findAll();
+
+        for (Todo todo : todos) {
+            if (todo.getId().equals(TodoID)) {
+                todoRepository.delete(todo);
+                break;
+            }
+        }
+    }
+
+    // Update by id
+    public void updateById(Long ID, String title) {
+        List<Todo> todos = todoRepository.findAll();
+
+        for (Todo todo : todos) {
+            if (todo.getId().equals(ID)) {
+                todo.setTitle(title);
+                todoRepository.save(todo);
+                break;
+            }
+        }
+    }
+
 }
