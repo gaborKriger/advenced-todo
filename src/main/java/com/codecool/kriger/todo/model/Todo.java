@@ -25,4 +25,8 @@ public class Todo {
     private Status status;
 
 
+    public Todo(String title, Status status) {
+        this.title = title;
+        this.status = status;
+    }
 }

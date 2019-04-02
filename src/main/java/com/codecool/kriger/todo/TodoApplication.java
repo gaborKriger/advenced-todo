@@ -12,8 +12,12 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class TodoApplication {
 
-    @Autowired
     private TodoRepository todoRepository;
+
+    @Autowired
+    public void setTodoRepository(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(TodoApplication.class, args);
