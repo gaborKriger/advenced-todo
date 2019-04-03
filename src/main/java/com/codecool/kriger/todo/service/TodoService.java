@@ -6,7 +6,9 @@ import com.codecool.kriger.todo.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TodoService {
@@ -25,8 +27,32 @@ public class TodoService {
     }
 
     // List by id
-    public List<Todo> listByID() {
-        return todoRepository.findAll();
+    public List<Todo> listByStatus(String status) {
+        List<Todo> allTodo = todoRepository.findAll();
+
+        for (Todo todo : allTodo) {
+            todo.checkStatusAndSetCompleted();
+        }
+
+        if (status.equals("active")) {
+            List<Todo> activeTodo = new ArrayList<>();
+            for (Todo todo : allTodo) {
+                if (todo.getStatus().equals(Status.ACTIVE)) {
+                    activeTodo.add(todo);
+                }
+            }
+            return activeTodo;
+        }
+        if (status.equals("complete")) {
+            List<Todo> completeTodo = new ArrayList<>();
+            for (Todo todo : allTodo) {
+                if (todo.getStatus().equals(Status.COMPLETE)) {
+                    completeTodo.add(todo);
+                }
+            }
+            return completeTodo;
+        }
+        return allTodo;
     }
 
     // Remove all completed
@@ -41,9 +67,20 @@ public class TodoService {
 
     // Toggle all status
     public void toggleAllStatus(boolean complete) {
-        todoRepository.findAll()
-                .forEach(todo -> todo.setStatus(
-                        complete ? Status.COMPLETE : Status.ACTIVE));
+        List<Todo> todos = todoRepository.findAll();
+
+        if (complete) {
+            for (Todo todo : todos) {
+                todo.setStatus(Status.COMPLETE);
+                todoRepository.save(todo);
+            }
+        } else {
+            for (Todo todo :
+                    todos) {
+                todo.setStatus(Status.ACTIVE);
+                todoRepository.save(todo);
+            }
+        }
     }
 
     // Remove by id
@@ -69,6 +106,28 @@ public class TodoService {
                 break;
             }
         }
+    }
+
+    // Find by id
+    public Todo findById(Long id) {
+        return todoRepository.findAll()
+                .stream()
+                .filter(todo -> todo.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+    // Toggle status by id
+    public void toggleStatus(Long id, boolean status) {
+        Optional<Todo> todo = todoRepository.findById(id);
+        if (status) {
+            todo.get().setStatus(Status.COMPLETE);
+            todoRepository.save(todo.get());
+        } else {
+            todo.get().setStatus(Status.ACTIVE);
+            todoRepository.save(todo.get());
+        }
+
     }
 
 }

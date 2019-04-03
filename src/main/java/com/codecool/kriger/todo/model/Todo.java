@@ -24,9 +24,21 @@ public class Todo {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Transient
+    private boolean completed;
 
     public Todo(String title, Status status) {
         this.title = title;
         this.status = status;
+    }
+
+    public void checkStatusAndSetCompleted() {
+        if (status.equals(Status.ACTIVE)) {
+            setCompleted(false);
+        } else if (status.equals(Status.COMPLETE)) {
+            setCompleted(true);
+        } else {
+            // TODO error handling
+        }
     }
 }

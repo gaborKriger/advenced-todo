@@ -27,7 +27,7 @@ public class TodoApplication {
     public CommandLineRunner init() {
         return args -> {
             Todo first = Todo.builder()
-                    .status(Status.ACTIVE)
+                    .status(Status.COMPLETE)
                     .title("First")
                     .build();
 

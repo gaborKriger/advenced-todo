@@ -5,7 +5,6 @@ import com.codecool.kriger.todo.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -29,8 +28,8 @@ public class TodoController {
 
     // List by id
     @PostMapping("/list")
-    public List<Todo> listByID() {
-        return todoService.listByID();
+    public List<Todo> listByStatus(@RequestParam("status") String status) {
+        return todoService.listByStatus(status);
     }
 
     // Remove all completed
@@ -42,7 +41,7 @@ public class TodoController {
 
     // Toggle all status
     @PutMapping("/todos/toggle_all")
-    public String toggleAllStatus(@RequestBody @Valid String complete) {
+    public String toggleAllStatus(@RequestParam("toggle-all") String complete) {
         todoService.toggleAllStatus(complete.equals("true"));
         return SUCCESS;
     }
@@ -56,9 +55,23 @@ public class TodoController {
 
     // Update by id
     @PutMapping("/todos/{todoID}")
-    public String updateById(@RequestParam("todo-title") String title,
-                             @PathVariable("todoID") Long todoID) {
+    public String updateById(@PathVariable("todoID") Long todoID,
+                             @RequestParam("todo-title") String title) {
         todoService.updateById(todoID, title);
+        return SUCCESS;
+    }
+
+    // Find by id
+    @GetMapping("/todos/{todoID}")
+    public void findById(@PathVariable("todoID") Long todoID) {
+        todoService.findById(todoID);
+    }
+
+    // Toggle status by id
+    @PutMapping("/todos/{todoID}/toggle_status")
+    public String toggleStatusById(@PathVariable("todoID") Long todoID,
+                                   @RequestParam("status") boolean status) {
+        todoService.toggleStatus(todoID, status);
         return SUCCESS;
     }
 
